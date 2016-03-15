@@ -1,0 +1,31 @@
+{
+  "name": "sock-js",
+  "version": "0.0.3",
+  "authors": [
+    "Yuriy Makhnovskyy <ymakhnovskyy@maven.co>"
+  ],
+  "description": "A web component for making wrapper under Socket Js protocol",
+  "main": "sock-js.html",
+  "keywords": [
+    "websocket",
+    "sockjs",
+    "polymer",
+    "webcomponent"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "polymer": "Polymer/polymer#^1.0.0",
+    "iron-ajax": "PolymerElements/iron-ajax#^1.0.0",
+  },
+  "devDependencies": {
+    "iron-component-page": "PolymerElements/iron-component-page#^1.0.0",
+    "web-component-tester": "*"
+  }
+}

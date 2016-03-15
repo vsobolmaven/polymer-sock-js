@@ -1,0 +1,138 @@
+
+<dom-module id="sockjs-component">
+    <script>
+      SockJsSimpleBehavior = {
+        'properties': {
+          url: String,
+          status: String,
+          reconnect: {
+            type: Boolean,
+            value: true,
+          },
+          reload_after_n: {
+            type: Boolean,
+            value: true,
+          },
+          max_retries: {
+            type: Number,
+            value: 30,
+          },
+          reset_mult: {
+            type: Number,
+            value: 6,
+          },
+          retry_timeout_ms: {
+            type: Number,
+            value: function() {return 1500 + Math.floor(Math.random() * 60)},
+          },
+          retry_multiplier: {
+            type: Number,
+            value: 2,
+          }
+        },
+        ready: function () {
+          this.conn = null;
+          this.reconnecting = false;
+          this.retry_curr_multiplier = 0;
+          this.retry_curr_timeout = 0;
+          this.retry_count = 0;
+
+          this.connect();
+        },
+
+        update_status: function() {
+          if (this.reconnecting) {
+            return this.onstatuschange('reconnecting');
+          } else if (this.conn === null || this.conn.readyState !== SockJS.OPEN) {
+            return this.onstatuschange('disconnected');
+          } else {
+            return this.onstatuschange('connected');
+          }
+        },
+
+        connect: function() {
+          if (this.conn != null) {
+            this.conn.close();
+            this.conn = null;
+          }
+          this.conn = new SockJS(this.url);
+          if (this.on_status_change != null) {
+            this.on_status_change('connecting');
+          }
+          this.conn.onopen = this.onopen.bind(this);
+          this.conn.onclose = this.onclose.bind(this);
+          this.conn.onmessage = this.onmessage.bind(this);
+        },
+
+        reconnect_reset: function() {
+          this.reconnecting = false;
+          this.retry_curr_timeout = 0;
+          this.retry_curr_multipler = 0;
+          return this.retry_count = 0;
+        },
+
+        reconnect_try: function(connfunc) {
+          var callback;
+          if (this.retry_count === this.max_retries) {
+            this.reconnecting = false;
+            if (this.reload_after_n) {
+              window.location.reload(true);
+            }
+            return;
+          }
+          if (!this.reconnecting) {
+            this.reconnecting = true;
+            this.retry_curr_timeout = this.retry_timeout_ms;
+            this.retry_curr_multipler = 1;
+            this.retry_count = 1;
+            return connfunc();
+          } else {
+            this.retry_count += 1;
+            callback = (function(_this) {
+              return function() {
+                _this.retry_curr_timeout *= _this.retry_multiplier;
+                _this.retry_curr_multipler += 1;
+                if (_this.retry_curr_multipler === _this.reset_mult) {
+                  _this.retry_curr_timeout = _this.retry_timeout_ms;
+                  _this.retry_curr_multipler = 1;
+                }
+                return connfunc();
+              };
+            })(this);
+            return setTimeout(callback, this.retry_curr_timeout);
+          }
+        },
+
+        send: function(data) {
+          return this.conn.send(data);
+        },
+
+        on_open: function() {
+          this.reconnect_reset();
+          this.update_status();
+          if (this.onopen != null) {
+            return this.onopen();
+          }
+        },
+        onstatuschange: function(status) {
+        },
+
+        on_close: function() {
+          this.conn = null;
+          this.update_status();
+          if (this.onclose != null) {
+            this.onclose();
+          }
+          if (this.reconnect) {
+            return this.reconnect_try(this.connect.bind(this));
+          }
+          return;
+        }
+      };
+      Polymer({
+        'is':'sockjs-component',
+
+        behaviors: [SockJsSimpleBehavior]
+      });
+    </script>
+</dom-module>

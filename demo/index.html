@@ -1,0 +1,65 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+    <title>Sock Js Demo</title>
+    <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
+    <link rel="import" href="../sock-js.html">
+  </head>
+
+  <body>
+    <dom-module id="sockjs-demo">
+      <link rel="import" href="/bower_components/paper-toast/paper-toast.html">
+
+      <template>
+        <paper-toast id="status" duration="0" opened></paper-toast>
+      </template>
+      <script>
+        UpdateInfoBehavior = {
+          onmessage: function(data) {
+            // Add you data treatment.
+            console.dir(data)
+          },
+          onstatuschange: function(status) {
+            console.debug('Status changed to:' + status);
+            if (status == 'connecting' || status == 'reconnecting') {
+              this.$.status.textContent = 'Establishing connection to server...';
+              this.$.status.show();
+            } else if (status != 'connected') {
+              this.$.status.textContent = 'Disconnected from server, data is not up-to-date';
+              this.$.status.show();
+            } else {
+              this.$.status.textContent = '';
+              this.$.status.hide();
+            }
+          },
+          onopen: function(status) {
+            console.debug('Authenticating.')
+
+            // Here you can change/remove sock authentification.
+            this.send('auth,' + this.authtoken)
+          },
+        };
+        Polymer({
+            is: 'sockjs-demo',
+            properties: {
+              /**
+              * SockJS Authentication token.
+              */
+              authtoken: String
+            },
+            behaviors: [SockJsSimpleBehavior, UpdateInfoBehavior]
+        });
+      </script>
+    </dom-module>
+
+    <p>Example of <code>&lt;sock-js&gt;</code>.</p>
+
+    <sockjs-demo
+        url="https://localhost:8080/socket"
+        authtoken="${some_random_session_token}">
+        </sockjs-demo>
+
+  </body>
+</html>
