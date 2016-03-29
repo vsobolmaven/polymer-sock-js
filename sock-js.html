@@ -107,7 +107,7 @@
           return this.conn.send(data);
         },
 
-        on_open: function() {
+        onopen: function() {
           this.reconnect_reset();
           this.update_status();
           if (this.onopen != null) {
@@ -117,7 +117,7 @@
         onstatuschange: function(status) {
         },
 
-        on_close: function() {
+        onclose: function() {
           this.conn = null;
           this.update_status();
           if (this.onclose != null) {
