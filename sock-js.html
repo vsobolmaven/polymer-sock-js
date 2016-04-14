@@ -120,9 +120,6 @@
         onclose: function() {
           this.conn = null;
           this.update_status();
-          if (this.onclose != null) {
-            this.onclose();
-          }
           if (this.reconnect) {
             return this.reconnect_try(this.connect.bind(this));
           }
