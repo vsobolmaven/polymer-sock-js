@@ -56,8 +56,8 @@
             this.conn = null;
           }
           this.conn = new SockJS(this.url);
-          if (this.on_status_change != null) {
-            this.on_status_change('connecting');
+          if (this.onstatuschange != null) {
+            this.onstatuschange('connecting');
           }
           this.conn.onopen = this.onopen.bind(this);
           this.conn.onclose = this.onclose.bind(this);
