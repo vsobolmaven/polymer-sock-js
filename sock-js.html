@@ -72,6 +72,9 @@
         },
 
         reconnect_try: function(connfunc) {
+          if (!this.conn) {
+              return;
+          }
           var callback;
           if (this.retry_count === this.max_retries) {
             this.reconnecting = false;
