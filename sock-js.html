@@ -1,6 +1,12 @@
+<link rel="import" href="../polymer/polymer.html">
 
 <dom-module id="sockjs-component">
     <script>
+     /**
+      * Provides methods to connect and communicate with a SockJS server.
+      *
+      * @polymerBehavior
+      */
       SockJsSimpleBehavior = {
         'properties': {
           url: String,
@@ -127,7 +133,7 @@
         }
       };
       Polymer({
-        'is':'sockjs-component',
+        'is': 'sockjs-component',
 
         behaviors: [SockJsSimpleBehavior]
       });

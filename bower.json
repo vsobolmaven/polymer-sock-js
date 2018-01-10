@@ -1,6 +1,6 @@
 {
   "name": "polymer-sock-js",
-  "version": "0.0.6",
+  "version": "2.0.0",
   "authors": [
     "Yuriy Makhnovskyy <ymakhnovskyy@maven.co>"
   ],
@@ -21,11 +21,9 @@
     "tests"
   ],
   "dependencies": {
-    "polymer": "Polymer/polymer#^1.0.0",
-    "iron-ajax": "PolymerElements/iron-ajax#^1.0.0"
+    "polymer": "Polymer/polymer#^2.0.0"
   },
   "devDependencies": {
-    "iron-component-page": "PolymerElements/iron-component-page#^1.0.0",
     "web-component-tester": "*"
   }
 }
